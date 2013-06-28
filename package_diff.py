@@ -23,8 +23,6 @@ def get_installed_packages(host, user=None, pw=None):
 if __name__ == "__main__":
     hosts = sys.argv[1:]
 
-    global_count = Counter()
-    global_count_v = Counter()
     occurence = defaultdict(list)
     occurence_v = defaultdict(list)
 
@@ -36,14 +34,12 @@ if __name__ == "__main__":
                 host_ = "{}({})".format(host, state)
             else:
                 host_ = host
-            global_count[pkg] += 1
-            global_count_v[pkg + "-" + version] += 1
             occurence[pkg].append(host_)
             occurence_v[pkg + "-" + version].append(host_)
 
-    for (pkg, count) in sorted(global_count.items(), key=lambda item: - item[1]):
-        print "{:>3d} {:<16s} [ {} ]".format(count, pkg[:16], " ".join(occurence[pkg]))
+    for (pkg, hosts_) in sorted(occurence.items(), key=lambda item: - len(item[1])):
+        print "{:>3d} {:<16s} [ {} ]".format(len(hosts_), pkg[:16], " ".join(hosts_))
 
-    for (pkg, count) in sorted(global_count_v.items(), key=lambda item: - item[1]):
-        print "{:>3d} {:<26s} [ {} ]".format(count, pkg[:26], " ".join(occurence_v[pkg]))
+    for (pkg, hosts_) in sorted(occurence_v.items(), key=lambda item: - len(item[1])):
+        print "{:>3d} {:<26s} [ {} ]".format(len(hosts_), pkg[:26], " ".join(hosts_))
 
